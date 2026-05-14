@@ -1,7 +1,7 @@
 # TransLens - 智能划词翻译助手
 
 <p align="center">
-  <img src="app-icon.png" alt="TransLens Icon" width="128" />
+  <img src="translens/app-icon.png" alt="TransLens Icon" width="128" />
 </p>
 
 <p align="center">
@@ -69,8 +69,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-username/translens.git
-cd translens
+git clone https://github.com/alanniko1265-ai/translate.git
+cd translate/translens
 
 # 安装依赖
 npm install
