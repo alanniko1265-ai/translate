@@ -1,11 +1,11 @@
-# TransLens - 智能划词翻译助手
+# TransLens — Smart Text Selection Translator
 
 <p align="center">
   <img src="translens/app-icon.png" alt="TransLens Icon" width="128" />
 </p>
 
 <p align="center">
-  <strong>划词翻译 · 截图翻译 · AI 翻译 · 多引擎支持</strong>
+  <strong>Select · Screenshot · Translate · Multi-Engine</strong>
 </p>
 
 <p align="center">
@@ -16,105 +16,105 @@
 
 ---
 
-## 功能特性
+## Features
 
-- **划词翻译** — 选中文本即可翻译，无需复制粘贴
-- **截图翻译** — 框选屏幕区域，自动 OCR 识别并翻译
-- **气泡弹窗** — 翻译结果以美观气泡形式显示，可自定义主题
-- **多引擎支持** — 内置 12 种翻译引擎，按需切换
-- **高度可定制** — 字体、颜色、动画、弹窗样式等均可调整
-- **历史记录** — 自动保存翻译历史，支持搜索和清除
-- **全局快捷键** — 自定义快捷键实现快捷操作
+- **Text Selection Translation** — Select text anywhere and translate instantly, no copy-paste needed
+- **Screenshot OCR Translation** — Draw a box over any screen region, auto-detect text and translate
+- **Chat Bubble Overlay** — Beautiful floating bubbles for translation results with customizable themes
+- **Multi-Engine Support** — 12 translation engines built-in, switch on the fly
+- **Highly Customizable** — Fonts, colors, animations, popup styles — everything adjustable
+- **Translation History** — Auto-saved history with search and clear support
+- **Global Shortcuts** — Customizable hotkeys for lightning-fast operation
 
-## 支持的翻译引擎
+## Supported Engines
 
-| 引擎 | 需要 API Key |
-|------|-------------|
-| Google Translate | 是 |
-| DeepL | 是 |
-| 百度翻译 | 是 |
-| 腾讯翻译 | 是 |
-| 火山翻译 (字节跳动) | 是 |
-| 阿里云翻译 | 是 |
-| 智谱 AI (GLM) | 是 |
-| Azure Translator | 是 |
-| OpenAI (GPT) | 是 |
-| DeepSeek | 是 |
-| Yandex Translate | 是 |
-| Kimi (Moonshot) | 是 |
+| Engine | API Key Required |
+|--------|-----------------|
+| Google Translate | Yes |
+| DeepL | Yes |
+| Baidu Translate | Yes |
+| Tencent Machine Translation | Yes |
+| Volcengine Translate (ByteDance) | Yes |
+| Alibaba Cloud Translate | Yes |
+| Zhipu AI (GLM) | Yes |
+| Azure Translator | Yes |
+| OpenAI (GPT) | Yes |
+| DeepSeek | Yes |
+| Yandex Translate | Yes |
+| Kimi (Moonshot) | Yes |
 
-> 所有翻译引擎都需要用户自行申请 API Key 并在设置中配置。
+> All engines require you to bring your own API key. Configure them in Settings.
 
-## 技术栈
+## Tech Stack
 
-| 层级 | 技术 |
-|------|------|
-| 桌面框架 | [Tauri v2](https://v2.tauri.app/) |
-| 前端 | React 18 + TypeScript |
-| 构建工具 | Vite 6 |
-| 样式 | Tailwind CSS 4 |
-| UI 组件 | Radix UI |
-| 状态管理 | Zustand |
-| 动画 | Framer Motion |
-| 图标 | Lucide React |
-| 后端 | Rust |
+| Layer | Technology |
+|-------|-----------|
+| Desktop Framework | [Tauri v2](https://v2.tauri.app/) |
+| Frontend | React 18 + TypeScript |
+| Build Tool | Vite 6 |
+| Styling | Tailwind CSS 4 |
+| UI Components | Radix UI |
+| State Management | Zustand |
+| Animation | Framer Motion |
+| Icons | Lucide React |
+| Backend | Rust |
 
-## 开发环境要求
+## Prerequisites
 
 - **Node.js** ≥ 18
 - **Rust** ≥ 1.70
-- **Windows** 10/11（目前仅支持 Windows）
+- **Windows** 10/11 (Windows-only for now)
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 克隆仓库
+# Clone the repo
 git clone https://github.com/alanniko1265-ai/translate.git
 cd translate/translens
 
-# 安装依赖
+# Install dependencies
 npm install
 
-# 启动开发服务器
+# Start dev server
 npm run tauri dev
 
-# 构建生产版本
+# Build for production
 npm run tauri build
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 translens/
-├── src/                  # React 前端源码
-│   ├── components/       # UI 组件
-│   ├── hooks/            # 自定义 Hooks
-│   ├── services/         # 翻译服务
-│   ├── stores/           # Zustand 状态
-│   ├── utils/            # 工具函数
-│   └── types.ts          # TypeScript 类型定义
-├── src-tauri/            # Tauri/Rust 后端
+├── src/                  # React frontend
+│   ├── components/       # UI components
+│   ├── hooks/            # Custom hooks
+│   ├── services/         # Translation services
+│   ├── stores/           # Zustand state
+│   ├── utils/            # Utility functions
+│   └── types.ts          # TypeScript types
+├── src-tauri/            # Tauri / Rust backend
 │   ├── src/
-│   │   ├── commands/     # Tauri 命令
-│   │   ├── utils/        # 后端工具
+│   │   ├── commands/     # Tauri commands
+│   │   ├── utils/        # Backend utilities
 │   │   ├── lib.rs
 │   │   └── main.rs
 │   ├── Cargo.toml
 │   └── tauri.conf.json
-├── public/               # 静态资源
+├── public/               # Static assets
 ├── package.json
 └── vite.config.ts
 ```
 
-## 配置
+## Configuration
 
-启动应用后，进入设置页面，为你想使用的翻译引擎填入 API Key。各引擎的申请地址：
+Launch the app, go to Settings, and fill in your API keys for the engines you want to use. Where to get them:
 
 - Google: https://cloud.google.com/translate
 - DeepL: https://www.deepl.com/pro-api
-- 百度: https://fanyi-api.baidu.com
-- 腾讯: https://cloud.tencent.com/product/tmt
-- 阿里云: https://www.aliyun.com/product/ai/alimt
+- Baidu: https://fanyi-api.baidu.com
+- Tencent: https://cloud.tencent.com/product/tmt
+- Alibaba Cloud: https://www.aliyun.com/product/ai/alimt
 - Azure: https://azure.microsoft.com/services/cognitive-services/translator/
 
 ## License
