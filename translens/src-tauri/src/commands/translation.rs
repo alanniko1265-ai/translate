@@ -295,16 +295,16 @@ pub async fn translate_text(request: TranslateRequest) -> Result<TranslateRespon
 // --- Default API Keys ---
 
 fn get_default_api_key(engine: TranslationEngine) -> Option<String> {
-    // Users must configure their own API keys in Settings.
-    // No default keys are provided — get your own from the respective service.
     match engine {
         TranslationEngine::Google => None,
         TranslationEngine::Deepl => None,
-        TranslationEngine::Baidu => None,
+        TranslationEngine::Baidu => Some("20260508002609032:AoaJfcRjJ3tQ40XguiiT".into()),
         TranslationEngine::Tencent => None,
         TranslationEngine::Volcengine => None,
         TranslationEngine::Aliyun => None,
-        TranslationEngine::Zhipu => None,
+        TranslationEngine::Zhipu => {
+            Some("29713404443145e5818433abb90c8fc1.ZH1bgZQLTVBqLhEd".into())
+        }
         TranslationEngine::Azure => None,
         TranslationEngine::Openai => None,
         TranslationEngine::Deepseek => None,
