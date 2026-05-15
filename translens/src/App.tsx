@@ -7,6 +7,7 @@ import { ScreenshotOverlay } from "./components/ScreenshotOverlay";
 import { ChatBubble } from "./components/ChatBubble/ChatBubble";
 import { Toaster } from "react-hot-toast";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
+import { setCurrentLanguage } from "./i18n";
 
 export default function App() {
   const searchParams = new URLSearchParams(window.location.search);
@@ -17,6 +18,10 @@ export default function App() {
 
   useGlobalShortcuts(!isOverlayMode && !isTranslationOverlayMode);
   const activeTab = useAppStore((s) => s.activeTab);
+  const language = useAppStore((s) => s.settings.language);
+
+  // Keep global i18n language in sync with store
+  setCurrentLanguage(language);
 
   if (isOverlayMode) {
     return <ScreenshotOverlay />;

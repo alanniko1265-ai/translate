@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../../stores/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useI18n } from "../../hooks/useI18n";
 import { LANGUAGES } from "../../types";
 import { getTranslationReadiness } from "../../services/translation/workflow";
 import { invoke } from "@tauri-apps/api/core";
@@ -28,6 +29,7 @@ export function TranslationPop() {
   const settings = useAppStore((s) => s.settings);
   const setActiveTab = useAppStore((s) => s.setActiveTab);
   const readiness = getTranslationReadiness(settings);
+  const { t } = useI18n();
 
   const handleTranslate = () => {
     if (inputText.trim()) {
@@ -48,7 +50,7 @@ export function TranslationPop() {
     } catch {
       await navigator.clipboard.writeText(result.translatedText);
     }
-    toast.success("已复制到剪贴板");
+    toast.success(t("translate.copied"));
   };
 
   const handleSpeak = () => {
@@ -87,10 +89,10 @@ export function TranslationPop() {
         pointerPlacement: position.pointerPlacement,
         pointerOffset: position.pointerOffset,
       });
-      toast.success("聊天框已弹出");
+      toast.success(t("translate.popout"));
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
-      toast.error(`弹出失败: ${msg}`);
+      toast.error(`${t("translate.popoutFail")}: ${msg}`);
     }
   };
 
@@ -106,7 +108,7 @@ export function TranslationPop() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-xs text-text-secondary">
             <Globe size={14} />
-            <span>输入文本</span>
+            <span>{t("translate.inputLabel")}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-xs text-text-muted">
@@ -134,19 +136,19 @@ export function TranslationPop() {
               handleTranslate();
             }
           }}
-          placeholder="输入或粘贴需要翻译的文字..."
+          placeholder={t("translate.placeholder")}
           className="w-full min-h-[80px] bg-transparent text-text-primary text-sm resize-none outline-none placeholder:text-text-muted"
           rows={3}
         />
 
         <div className="flex items-center justify-between mt-3">
           <span className="text-xs text-text-muted">
-            {inputText.length} 字符
+            {inputText.length} {t("translate.chars")}
           </span>
           <div className="flex gap-2">
             {inputText.trim() && (
               <button onClick={() => setInputText("")} className="btn-ghost text-xs">
-                清除
+                {t("translate.clear")}
               </button>
             )}
             <motion.button
@@ -159,7 +161,7 @@ export function TranslationPop() {
               {isLoading ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : null}
-              翻译
+              {t("translate.button")}
             </motion.button>
           </div>
         </div>
@@ -208,7 +210,7 @@ export function TranslationPop() {
                   className="flex items-center gap-1 text-xs text-text-muted hover:text-text-secondary transition-colors mb-2"
                 >
                   {showOriginal ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  原文
+                  {t("translate.original")}
                 </button>
                 <AnimatePresence>
                   {showOriginal && (
@@ -245,10 +247,10 @@ export function TranslationPop() {
 
             {/* Footer Actions */}
             <div className="flex items-center justify-end gap-1 px-4 py-3 border-t border-white/5">
-              <ActionButton icon={Copy} label="复制" onClick={handleCopy} />
-              <ActionButton icon={Volume2} label="朗读" onClick={handleSpeak} />
-              <ActionButton icon={ExternalLink} label="弹出聊天框" onClick={handlePopOut} />
-              <ActionButton icon={Star} label="收藏" onClick={() => toast.success("已收藏")} />
+              <ActionButton icon={Copy} label={t("translate.copy")} onClick={handleCopy} />
+              <ActionButton icon={Volume2} label={t("translate.speak")} onClick={handleSpeak} />
+              <ActionButton icon={ExternalLink} label={t("translate.popoutBtn")} onClick={handlePopOut} />
+              <ActionButton icon={Star} label={t("translate.favorite")} onClick={() => toast.success(t("translate.favorited"))} />
             </div>
           </motion.div>
         )}
@@ -269,7 +271,7 @@ export function TranslationPop() {
             >
               <Loader2 size={28} className="text-primary-light" />
             </motion.div>
-            <p className="text-sm text-text-muted">翻译中...</p>
+            <p className="text-sm text-text-muted">{t("translate.translating")}</p>
           </motion.div>
         )}
       </AnimatePresence>

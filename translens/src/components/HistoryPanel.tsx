@@ -1,12 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../stores/appStore";
+import { useI18n } from "../hooks/useI18n";
 import { LANGUAGES } from "../types";
 import {
   Trash2,
   Search,
   Copy,
   Clock,
-  Star,
   ExternalLink,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -15,6 +15,7 @@ import { useState } from "react";
 export function HistoryPanel() {
   const { translationHistory, clearHistory } = useAppStore();
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
 
   const filtered = search.trim()
     ? translationHistory.filter(
@@ -31,16 +32,16 @@ export function HistoryPanel() {
     } catch {
       await navigator.clipboard.writeText(text);
     }
-    toast.success("已复制");
+    toast.success(t("history.copied"));
   };
 
   const formatTime = (ts: number) => {
     const d = new Date(ts);
     const now = new Date();
     const diff = now.getTime() - d.getTime();
-    if (diff < 60000) return "刚刚";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)} 分钟前`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)} 小时前`;
+    if (diff < 60000) return t("history.justNow");
+    if (diff < 3600000) return t("history.minutesAgo", { n: Math.floor(diff / 60000) });
+    if (diff < 86400000) return t("history.hoursAgo", { n: Math.floor(diff / 3600000) });
     return d.toLocaleDateString("zh-CN", {
       month: "short",
       day: "numeric",
@@ -57,7 +58,7 @@ export function HistoryPanel() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-lg font-semibold">翻译历史</h2>
+        <h2 className="text-lg font-semibold">{t("history.title")}</h2>
         {translationHistory.length > 0 && (
           <motion.button
             onClick={clearHistory}
@@ -66,7 +67,7 @@ export function HistoryPanel() {
             whileTap={{ scale: 0.98 }}
           >
             <Trash2 size={14} />
-            清空全部
+            {t("history.clearAll")}
           </motion.button>
         )}
       </motion.div>
@@ -81,7 +82,7 @@ export function HistoryPanel() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="搜索翻译记录..."
+            placeholder={t("history.searchPlaceholder")}
             className="input-field pl-9"
           />
         </div>
@@ -98,12 +99,12 @@ export function HistoryPanel() {
             <Clock size={40} className="opacity-30" />
             <p className="text-sm">
               {translationHistory.length === 0
-                ? "暂无翻译记录"
-                : "没有匹配的记录"}
+                ? t("history.empty")
+                : t("history.noMatch")}
             </p>
             {translationHistory.length === 0 && (
               <p className="text-xs text-text-muted/50">
-                翻译内容将自动保存在这里
+                {t("history.autoSave")}
               </p>
             )}
           </motion.div>
@@ -162,7 +163,7 @@ export function HistoryPanel() {
 
       {translationHistory.length > 0 && (
         <p className="text-xs text-text-muted text-center mt-3">
-          共 {translationHistory.length} 条记录，最多保留 500 条
+          {t("history.total", { count: translationHistory.length })}
         </p>
       )}
     </div>

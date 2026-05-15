@@ -1,6 +1,6 @@
 [package]
 name = "translens"
-version = "1.0.0"
+version = "1.0.1"
 description = "TransLens - 智能划词翻译助手"
 authors = ["TransLens Team"]
 edition = "2021"

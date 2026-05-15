@@ -1,16 +1,18 @@
 import { useAppStore } from "../stores/appStore";
+import { useI18n } from "../hooks/useI18n";
 import { motion } from "framer-motion";
 import { Languages, History, Settings } from "lucide-react";
 
 const tabs = [
-  { id: "translate" as const, icon: Languages, label: "翻译" },
-  { id: "history" as const, icon: History, label: "历史" },
-  { id: "settings" as const, icon: Settings, label: "设置" },
+  { id: "translate" as const, icon: Languages, labelKey: "sidebar.translate" },
+  { id: "history" as const, icon: History, labelKey: "sidebar.history" },
+  { id: "settings" as const, icon: Settings, labelKey: "sidebar.settings" },
 ];
 
 export function Sidebar() {
   const activeTab = useAppStore((s) => s.activeTab);
   const setActiveTab = useAppStore((s) => s.setActiveTab);
+  const { t } = useI18n();
 
   return (
     <aside className="w-16 h-full flex flex-col items-center py-4 border-r border-white/5 bg-[#0F172A]">
@@ -21,7 +23,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-2">
-        {tabs.map(({ id, icon: Icon, label }) => (
+        {tabs.map(({ id, icon: Icon, labelKey }) => (
           <motion.button
             key={id}
             onClick={() => setActiveTab(id)}
@@ -35,7 +37,7 @@ export function Sidebar() {
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            title={label}
+            title={t(labelKey)}
           >
             <Icon size={20} />
             {activeTab === id && (

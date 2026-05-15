@@ -1,4 +1,5 @@
 import { useAppStore } from "../../stores/appStore";
+import { useI18n } from "../../hooks/useI18n";
 import { CHAT_BUBBLE_THEMES } from "../../utils/chatBubbleThemes";
 import { SettingSection } from "./SettingSection";
 import { SelectField } from "./SelectField";
@@ -6,35 +7,36 @@ import { SliderField } from "./SliderField";
 import { ColorField } from "./ColorField";
 import { MessageCircle } from "lucide-react";
 
-const themeOptions = [
-  ...CHAT_BUBBLE_THEMES.map((t) => ({ value: t.id, label: t.name })),
-  { value: "custom", label: "自定义" },
-];
-
-const animationOptions = [
-  { value: "spring", label: "弹性动画" },
-  { value: "gentle", label: "柔和淡入" },
-  { value: "none", label: "无动画" },
-];
-
 export function ChatBubbleSettings() {
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
+  const { t } = useI18n();
+
+  const themeOptions = [
+    ...CHAT_BUBBLE_THEMES.map((th) => ({ value: th.id, label: th.name })),
+    { value: "custom", label: t("settings.chatBubble.custom") },
+  ];
+
+  const animationOptions = [
+    { value: "spring", label: t("settings.chatBubble.animSpring") },
+    { value: "gentle", label: t("settings.chatBubble.animGentle") },
+    { value: "none", label: t("settings.chatBubble.animNone") },
+  ];
 
   const set = (key: string, value: unknown) => updateSettings({ [key]: value });
 
   return (
     <>
-      <SettingSection title="聊天框主题" icon={MessageCircle}>
+      <SettingSection title={t("settings.chatBubble.themeTitle")} icon={MessageCircle}>
         <SelectField
-          label="预设主题"
-          description="选择聊天框的配色方案"
+          label={t("settings.chatBubble.preset")}
+          description={t("settings.chatBubble.presetDesc")}
           value={settings.chatBubbleTheme}
           options={themeOptions}
           onChange={(v) => {
             set("chatBubbleTheme", v);
             if (v !== "custom") {
-              const preset = CHAT_BUBBLE_THEMES.find((t) => t.id === v);
+              const preset = CHAT_BUBBLE_THEMES.find((th) => th.id === v);
               if (preset) {
                 updateSettings({
                   chatBubbleBgColor: preset.bgColor,
@@ -46,26 +48,26 @@ export function ChatBubbleSettings() {
           }}
         />
         <ColorField
-          label="背景颜色"
+          label={t("settings.chatBubble.bgColor")}
           value={settings.chatBubbleBgColor}
           onChange={(v) => set("chatBubbleBgColor", v)}
         />
         <ColorField
-          label="文字颜色"
+          label={t("settings.chatBubble.textColor")}
           value={settings.chatBubbleTextColor}
           onChange={(v) => set("chatBubbleTextColor", v)}
         />
         <ColorField
-          label="强调色"
+          label={t("settings.chatBubble.accentColor")}
           value={settings.chatBubbleAccentColor}
           onChange={(v) => set("chatBubbleAccentColor", v)}
         />
       </SettingSection>
 
-      <SettingSection title="聊天框样式" icon={MessageCircle}>
+      <SettingSection title={t("settings.chatBubble.styleTitle")} icon={MessageCircle}>
         <SliderField
-          label="最大宽度"
-          description="聊天框的最大宽度"
+          label={t("settings.chatBubble.maxWidth")}
+          description={t("settings.chatBubble.maxWidthDesc")}
           value={settings.chatBubbleMaxWidth}
           min={240}
           max={480}
@@ -74,8 +76,8 @@ export function ChatBubbleSettings() {
           onChange={(v) => set("chatBubbleMaxWidth", v)}
         />
         <SliderField
-          label="背景透明度"
-          description="聊天框背景的不透明度"
+          label={t("settings.chatBubble.opacity")}
+          description={t("settings.chatBubble.opacityDesc")}
           value={settings.chatBubbleOpacity}
           min={50}
           max={100}
@@ -84,8 +86,8 @@ export function ChatBubbleSettings() {
           onChange={(v) => set("chatBubbleOpacity", v)}
         />
         <SliderField
-          label="字体大小"
-          description="聊天框译文的字体大小"
+          label={t("settings.chatBubble.fontSize")}
+          description={t("settings.chatBubble.fontSizeDesc")}
           value={settings.chatBubbleFontSize}
           min={14}
           max={24}
@@ -94,8 +96,8 @@ export function ChatBubbleSettings() {
           onChange={(v) => set("chatBubbleFontSize", v)}
         />
         <SelectField
-          label="动画风格"
-          description="聊天框出现时的动画效果"
+          label={t("settings.chatBubble.animation")}
+          description={t("settings.chatBubble.animationDesc")}
           value={settings.chatBubbleAnimation}
           options={animationOptions}
           onChange={(v) =>

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAppStore } from "../../stores/appStore";
+import { useI18n } from "../../hooks/useI18n";
 import { LANGUAGES, FONT_PRESETS } from "../../types";
+import { SUPPORTED_LANGUAGES } from "../../i18n";
 import type { TranslationEngine, UserSettings } from "../../types";
 import {
   Globe,
@@ -9,7 +11,6 @@ import {
   Keyboard,
   Monitor,
   ChevronRight,
-  Eye,
   Type,
   Box,
   Layers,
@@ -25,52 +26,53 @@ import { ToggleField } from "./ToggleField";
 import { InputField } from "./InputField";
 import { ShortcutField } from "./ShortcutField";
 
-const engineOptions = [
-  { value: "google", label: "Google 翻译" },
-  { value: "deepl", label: "DeepL" },
-  { value: "baidu", label: "百度翻译" },
-  { value: "zhipu", label: "智谱AI (GLM)" },
-  { value: "azure", label: "Microsoft Azure" },
-  { value: "openai", label: "OpenAI (GPT)" },
-  { value: "deepseek", label: "DeepSeek" },
-  { value: "yandex", label: "Yandex Translate" },
-  { value: "kimi", label: "Kimi (月之暗面)" },
-  { value: "tencent", label: "腾讯云翻译" },
-  { value: "volcengine", label: "火山翻译" },
-  { value: "aliyun", label: "阿里云翻译" },
-];
-
-const borderStyleOptions = [
-  { value: "dashed", label: "虚线" },
-  { value: "solid", label: "实线" },
-  { value: "dotted", label: "点线" },
-];
-
-const themeOptions = [
-  { value: "dark", label: "深色" },
-  { value: "light", label: "浅色" },
-  { value: "system", label: "跟随系统" },
-];
-
-const textAlignOptions = [
-  { value: "left", label: "左对齐" },
-  { value: "center", label: "居中" },
-];
-
 export function SettingsPanel() {
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
   const [activeGroup, setActiveGroup] = useState<string>("translate");
+  const { t } = useI18n();
 
   const set = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) =>
     updateSettings({ [key]: value });
 
+  const engineOptions = [
+    { value: "google", label: t("engine.google") },
+    { value: "deepl", label: t("engine.deepl") },
+    { value: "baidu", label: t("engine.baidu") },
+    { value: "zhipu", label: t("engine.zhipu") },
+    { value: "azure", label: t("engine.azure") },
+    { value: "openai", label: t("engine.openai") },
+    { value: "deepseek", label: t("engine.deepseek") },
+    { value: "yandex", label: t("engine.yandex") },
+    { value: "kimi", label: t("engine.kimi") },
+    { value: "tencent", label: t("engine.tencent") },
+    { value: "volcengine", label: t("engine.volcengine") },
+    { value: "aliyun", label: t("engine.aliyun") },
+  ];
+
+  const borderStyleOptions = [
+    { value: "dashed", label: t("settings.borderStyle.dashed") },
+    { value: "solid", label: t("settings.borderStyle.solid") },
+    { value: "dotted", label: t("settings.borderStyle.dotted") },
+  ];
+
+  const themeOptions = [
+    { value: "dark", label: t("settings.theme.dark") },
+    { value: "light", label: t("settings.theme.light") },
+    { value: "system", label: t("settings.theme.system") },
+  ];
+
+  const textAlignOptions = [
+    { value: "left", label: t("settings.textAlign.left") },
+    { value: "center", label: t("settings.textAlign.center") },
+  ];
+
   const groups = [
-    { id: "translate", icon: Globe, label: "翻译设置" },
-    { id: "appearance", icon: Palette, label: "外观设置" },
-    { id: "shortcuts", icon: Keyboard, label: "快捷键" },
-    { id: "chatBubble", icon: MessageCircle, label: "聊天框设置" },
-    { id: "system", icon: Monitor, label: "系统设置" },
+    { id: "translate", icon: Globe, label: t("settings.group.translate") },
+    { id: "appearance", icon: Palette, label: t("settings.group.appearance") },
+    { id: "shortcuts", icon: Keyboard, label: t("settings.group.shortcuts") },
+    { id: "chatBubble", icon: MessageCircle, label: t("settings.group.chatBubble") },
+    { id: "system", icon: Monitor, label: t("settings.group.system") },
   ];
 
   return (
@@ -80,40 +82,51 @@ export function SettingsPanel() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-lg font-semibold">设置</h2>
+        <h2 className="text-lg font-semibold">{t("settings.title")}</h2>
       </motion.div>
 
       {/* Group Tabs */}
-      <div className="flex gap-1 px-4 mb-4 overflow-x-auto scrollbar-hide">
+      <div className="flex flex-wrap gap-1 px-4 mb-4">
         {groups.map(({ id, icon: Icon, label }) => (
           <button
             key={id}
             onClick={() => setActiveGroup(id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-colors ${
               activeGroup === id
                 ? "bg-primary/15 text-primary-light"
                 : "text-text-muted hover:text-text-secondary"
             }`}
           >
-            <Icon size={15} />
+            <Icon size={14} />
             {label}
           </button>
         ))}
+      </div>
+
+      {/* Language Selector - always visible */}
+      <div className="px-4 mb-3">
+        <SelectField
+          label={t("settings.system.language")}
+          description={t("settings.system.languageDesc")}
+          value={settings.language}
+          options={SUPPORTED_LANGUAGES}
+          onChange={(v) => set("language", v)}
+        />
       </div>
 
       {/* Scrollable Settings Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-4 scrollbar-hide">
         {activeGroup === "translate" && (
           <>
-            <SettingSection title="翻译引擎" icon={Globe}>
+            <SettingSection title={t("settings.engine.title")} icon={Globe}>
               <SelectField
-                label="默认引擎"
+                label={t("settings.engine.default")}
                 value={settings.engine}
                 options={engineOptions}
                 onChange={(v) => set("engine", v as TranslationEngine)}
               />
               <SelectField
-                label="目标语言"
+                label={t("settings.engine.targetLang")}
                 value={settings.targetLang}
                 options={Object.entries(LANGUAGES).map(([k, v]) => ({
                   value: k,
@@ -122,14 +135,14 @@ export function SettingsPanel() {
                 onChange={(v) => set("targetLang", v)}
               />
               <ToggleField
-                label="翻译后自动复制"
-                description="翻译完成后自动将译文复制到剪贴板"
+                label={t("settings.engine.autoCopy")}
+                description={t("settings.engine.autoCopyDesc")}
                 value={settings.autoCopy}
                 onChange={(v) => set("autoCopy", v)}
               />
             </SettingSection>
 
-            <SettingSection title="API 密钥" icon={Globe}>
+            <SettingSection title={t("settings.apiKeys.title")} icon={Globe}>
               <ApiKeyManager
                 apiKeys={settings.apiKeys}
                 onChange={(apiKeys) => set("apiKeys", apiKeys)}
@@ -140,10 +153,10 @@ export function SettingsPanel() {
 
         {activeGroup === "appearance" && (
           <>
-            <SettingSection title="翻译浮窗" icon={Layers}>
+            <SettingSection title={t("settings.popup.title")} icon={Layers}>
               <SliderField
-                label="浮窗宽度"
-                description="控制翻译结果浮窗的宽度"
+                label={t("settings.popup.width")}
+                description={t("settings.popup.widthDesc")}
                 value={settings.popupWidth}
                 min={240}
                 max={480}
@@ -152,8 +165,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("popupWidth", v)}
               />
               <SliderField
-                label="浮窗圆角"
-                description="翻译浮窗的边角圆润程度"
+                label={t("settings.popup.radius")}
+                description={t("settings.popup.radiusDesc")}
                 value={settings.popupBorderRadius}
                 min={8}
                 max={24}
@@ -162,8 +175,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("popupBorderRadius", v)}
               />
               <SliderField
-                label="浮窗透明度"
-                description="翻译浮窗的整体透明度"
+                label={t("settings.popup.opacity")}
+                description={t("settings.popup.opacityDesc")}
                 value={settings.popupOpacity}
                 min={60}
                 max={100}
@@ -173,10 +186,10 @@ export function SettingsPanel() {
               />
             </SettingSection>
 
-            <SettingSection title="译文排版" icon={Type}>
+            <SettingSection title={t("settings.typography.title")} icon={Type}>
               <SelectField
-                label="字体族"
-                description="译文显示使用的字体"
+                label={t("settings.typography.fontFamily")}
+                description={t("settings.typography.fontFamilyDesc")}
                 value={settings.fontFamily}
                 options={FONT_PRESETS.map((f) => ({
                   value: f.fontFamily,
@@ -185,8 +198,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("fontFamily", v)}
               />
               <SliderField
-                label="字号"
-                description="译文文字大小"
+                label={t("settings.typography.fontSize")}
+                description={t("settings.typography.fontSizeDesc")}
                 value={settings.fontSize}
                 min={14}
                 max={24}
@@ -195,8 +208,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("fontSize", v)}
               />
               <SliderField
-                label="字重"
-                description="译文文字粗细 (400-700)"
+                label={t("settings.typography.fontWeight")}
+                description={t("settings.typography.fontWeightDesc")}
                 value={settings.fontWeight}
                 min={400}
                 max={700}
@@ -204,8 +217,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("fontWeight", v)}
               />
               <SliderField
-                label="行高"
-                description="译文行间距"
+                label={t("settings.typography.lineHeight")}
+                description={t("settings.typography.lineHeightDesc")}
                 value={settings.lineHeight}
                 min={1.4}
                 max={2.0}
@@ -213,8 +226,8 @@ export function SettingsPanel() {
                 onChange={(v) => set("lineHeight", v)}
               />
               <SliderField
-                label="字间距"
-                description="译文字符间距"
+                label={t("settings.typography.letterSpacing")}
+                description={t("settings.typography.letterSpacingDesc")}
                 value={settings.letterSpacing}
                 min={0}
                 max={2}
@@ -223,27 +236,27 @@ export function SettingsPanel() {
                 onChange={(v) => set("letterSpacing", v)}
               />
               <SelectField
-                label="对齐方式"
-                description="译文文本对齐"
+                label={t("settings.typography.textAlign")}
+                description={t("settings.typography.textAlignDesc")}
                 value={settings.textAlign}
                 options={textAlignOptions}
                 onChange={(v) => set("textAlign", v as "left" | "center")}
               />
             </SettingSection>
 
-            <SettingSection title="划词框样式" icon={Box}>
+            <SettingSection title={t("settings.selection.title")} icon={Box}>
               <ColorField
-                label="背景色"
+                label={t("settings.selection.bgColor")}
                 value={settings.selectionBgColor}
                 onChange={(v) => set("selectionBgColor", v)}
               />
               <ColorField
-                label="边框色"
+                label={t("settings.selection.borderColor")}
                 value={settings.selectionBorderColor}
                 onChange={(v) => set("selectionBorderColor", v)}
               />
               <SelectField
-                label="边框样式"
+                label={t("settings.selection.borderStyle")}
                 value={settings.selectionBorderStyle}
                 options={borderStyleOptions}
                 onChange={(v) =>
@@ -251,7 +264,7 @@ export function SettingsPanel() {
                 }
               />
               <SliderField
-                label="边框宽度"
+                label={t("settings.selection.borderWidth")}
                 value={settings.selectionBorderWidth}
                 min={1}
                 max={6}
@@ -260,7 +273,7 @@ export function SettingsPanel() {
                 onChange={(v) => set("selectionBorderWidth", v)}
               />
               <SliderField
-                label="圆角"
+                label={t("settings.selection.borderRadius")}
                 value={settings.selectionBorderRadius}
                 min={0}
                 max={16}
@@ -270,9 +283,9 @@ export function SettingsPanel() {
               />
             </SettingSection>
 
-            <SettingSection title="主题" icon={Palette}>
+            <SettingSection title={t("settings.theme.title")} icon={Palette}>
               <SelectField
-                label="主题模式"
+                label={t("settings.theme.mode")}
                 value={settings.theme}
                 options={themeOptions}
                 onChange={(v) => set("theme", v as UserSettings["theme"])}
@@ -282,9 +295,9 @@ export function SettingsPanel() {
         )}
 
         {activeGroup === "shortcuts" && (
-          <SettingSection title="快捷键配置" icon={Keyboard}>
+          <SettingSection title={t("settings.shortcuts.title")} icon={Keyboard}>
             <ShortcutField
-              label="划词翻译"
+              label={t("settings.shortcuts.translate")}
               value={settings.shortcuts.translate}
               onChange={(v) =>
                 set("shortcuts", { ...settings.shortcuts, translate: v })
@@ -292,7 +305,7 @@ export function SettingsPanel() {
               placeholder="Ctrl+Shift+T"
             />
             <ShortcutField
-              label="截图翻译"
+              label={t("settings.shortcuts.screenshot")}
               value={settings.shortcuts.screenshot}
               onChange={(v) =>
                 set("shortcuts", { ...settings.shortcuts, screenshot: v })
@@ -300,7 +313,7 @@ export function SettingsPanel() {
               placeholder="Ctrl+Shift+S"
             />
             <ShortcutField
-              label="显示/隐藏"
+              label={t("settings.shortcuts.toggle")}
               value={settings.shortcuts.toggle}
               onChange={(v) =>
                 set("shortcuts", { ...settings.shortcuts, toggle: v })
@@ -313,16 +326,23 @@ export function SettingsPanel() {
         {activeGroup === "chatBubble" && <ChatBubbleSettings />}
 
         {activeGroup === "system" && (
-          <SettingSection title="系统设置" icon={Monitor}>
+          <SettingSection title={t("settings.system.title")} icon={Monitor}>
+            <SelectField
+              label={t("settings.system.language")}
+              description={t("settings.system.languageDesc")}
+              value={settings.language}
+              options={SUPPORTED_LANGUAGES}
+              onChange={(v) => set("language", v)}
+            />
             <ToggleField
-              label="开机自启"
-              description="系统启动时自动运行 TransLens"
+              label={t("settings.system.launchOnStartup")}
+              description={t("settings.system.launchOnStartupDesc")}
               value={settings.launchOnStartup}
               onChange={(v) => set("launchOnStartup", v)}
             />
             <ToggleField
-              label="静默模式"
-              description="隐藏窗口，仅通过快捷键响应"
+              label={t("settings.system.silentMode")}
+              description={t("settings.system.silentModeDesc")}
               value={settings.silentMode}
               onChange={(v) => set("silentMode", v)}
             />
@@ -330,7 +350,7 @@ export function SettingsPanel() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-text-primary">TransLens</p>
-                  <p className="text-xs text-text-muted">版本 1.0.0</p>
+                  <p className="text-xs text-text-muted">{t("settings.system.version")} 1.0.1</p>
                 </div>
                 <ChevronRight size={16} className="text-text-muted" />
               </div>
@@ -471,6 +491,7 @@ function ApiKeyManager({
   onChange: (keys: Record<TranslationEngine, string>) => void;
 }) {
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
 
   const filtered = API_KEY_CONFIGS.filter(
     (c) =>
@@ -490,12 +511,12 @@ function ApiKeyManager({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="搜索 API..."
+          placeholder={t("settings.apiKeys.search")}
           className="input-field pl-9"
         />
       </div>
       {filtered.length === 0 && (
-        <p className="text-xs text-text-muted text-center py-4">无匹配结果</p>
+        <p className="text-xs text-text-muted text-center py-4">{t("settings.apiKeys.noMatch")}</p>
       )}
       {filtered.map((cfg) => (
         <ApiKeyRow
@@ -518,6 +539,7 @@ function ApiKeyRow({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { t } = useI18n();
   const parts = value.split(config.separator, config.fields.length);
   while (parts.length < config.fields.length) parts.push("");
 
@@ -541,11 +563,11 @@ function ApiKeyRow({
               : "bg-amber-500/15 text-amber-400"
           }`}
         >
-          {isConfigured ? "可用" : "未配置"}
+          {isConfigured ? t("settings.apiKeys.available") : t("settings.apiKeys.notConfigured")}
         </span>
         {config.hasDefault && (
           <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary-light">
-            默认
+            {t("settings.apiKeys.default")}
           </span>
         )}
       </div>

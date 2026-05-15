@@ -4,6 +4,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
 import { useAppStore } from "../../stores/appStore";
+import { useI18n } from "../../hooks/useI18n";
 import { LANGUAGES } from "../../types";
 import { resolveChatBubbleColors } from "../../utils/chatBubbleThemes";
 import type { PointerPlacement } from "../../utils/smartPosition";
@@ -36,6 +37,7 @@ export function ChatBubble() {
   const [showOriginal, setShowOriginal] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const settings = useAppStore((s) => s.settings);
+  const { t } = useI18n();
 
   const searchParams = new URLSearchParams(window.location.search);
   const waitForResult = searchParams.get("loading") === "1";
@@ -198,7 +200,7 @@ export function ChatBubble() {
     } catch {
       await navigator.clipboard.writeText(payload.translatedText);
     }
-    toast.success("已复制");
+    toast.success(t("chatBubble.copied"));
   };
 
   const handleSpeak = () => {
@@ -344,7 +346,7 @@ export function ChatBubble() {
                   className="text-xs tracking-wide"
                   style={{ color: colors.text, opacity: 0.5 }}
                 >
-                  翻译中...
+                  {t("chatBubble.translating")}
                 </p>
               </motion.div>
             )}
@@ -375,7 +377,7 @@ export function ChatBubble() {
                   className="btn-ghost text-xs mt-1"
                   style={{ color: colors.text, borderColor: `${colors.accent}33` }}
                 >
-                  关闭
+                  {t("chatBubble.close")}
                 </button>
               </motion.div>
             )}
@@ -442,9 +444,9 @@ export function ChatBubble() {
                     ) : (
                       <ChevronDown size={13} />
                     )}
-                    <span className="tracking-wide">原文</span>
+                    <span className="tracking-wide">{t("chatBubble.original")}</span>
                     <span className="opacity-30 text-[10px]">
-                      — {payload.originalText.length} 字符
+                      — {payload.originalText.length} {t("chatBubble.chars")}
                     </span>
                   </button>
                   <AnimatePresence>
@@ -509,19 +511,19 @@ export function ChatBubble() {
                 >
                   <ActionBtn
                     icon={Copy}
-                    label="复制"
+                    label={t("chatBubble.copy")}
                     onClick={handleCopy}
                     color={colors.text}
                   />
                   <ActionBtn
                     icon={Volume2}
-                    label="朗读"
+                    label={t("chatBubble.speak")}
                     onClick={handleSpeak}
                     color={colors.text}
                   />
                   <ActionBtn
                     icon={X}
-                    label="关闭"
+                    label={t("chatBubble.close")}
                     onClick={handleClose}
                     color={colors.text}
                   />
