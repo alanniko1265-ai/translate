@@ -2,4 +2,18 @@
 .vscode/
 translens/.vs/
 translens/.idea/
-新建 文本文档.txt
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+target/
+translens/src-tauri/target/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
